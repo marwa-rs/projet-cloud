@@ -1,0 +1,24 @@
+pipeline {
+    agent any
+    stages {
+        stage('Clone') {
+            steps {
+                git credentialsId: 'github-token',
+                    url: 'https://github.com/marwa-rs/projet-cloud.git',
+                    branch: 'main'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'sudo docker build -t mon-app .'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'sudo docker stop mon-app || true'
+                sh 'sudo docker rm mon-app || true'
+                sh 'sudo docker run -d --name mon-app -p 5000:5000 mon-app'
+            }
+        }
+    }
+}
