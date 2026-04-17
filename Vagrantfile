@@ -5,7 +5,7 @@ Vagrant.configure("2") do |config|
   config.vm.boot_timeout = 600
 
   config.vm.provider "virtualbox" do |v|
-    v.memory = 4096
+    v.memory = 5120
     v.cpus = 2
     v.name = "projet-cloud"
     v.customize ["modifyvm", :id, "--uart1", "0x3F8", "4"]
@@ -18,5 +18,7 @@ Vagrant.configure("2") do |config|
     systemctl enable docker
     systemctl start docker
     usermod -aG docker vagrant
+    chmod 666 /var/run/docker.sock
+    echo "Docker prêt !"
   SHELL
 end
