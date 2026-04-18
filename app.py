@@ -499,14 +499,24 @@ HTML = """
             </div>
             <div class="stack-item">
                 <div class="stack-icon">Git</div>
+                <div>
+                    <div class="stack-name">GitHub</div>
+                    <div class="stack-version">-</div>
+                    <div class="stack-role">Source control</div>
                 </div>
             </div>
             <div class="stack-item">
+                <div class="stack-icon">Ubu</div>
+                <div>
+                    <div class="stack-name">Ubuntu</div>
                     <div class="stack-version">22.04 LTS</div>
                     <div class="stack-role">Systeme d'exploitation</div>
                 </div>
             </div>
             <div class="stack-item">
+                <div class="stack-icon">NE</div>
+                <div>
+                    <div class="stack-name">Node Exporter</div>
                     <div class="stack-version">Latest</div>
                     <div class="stack-role">Agent metriques</div>
                 </div>
@@ -554,8 +564,6 @@ HTML = """
                     <div class="step-num">06</div>
                     <div class="step-name">Live</div>
                     <div class="step-desc">App sur :5000</div>
-                <div class="stack-icon">NE</div>
-                <div>
                 </div>
             </div>
         </div>
@@ -582,11 +590,4 @@ def home():
     return render_template_string(HTML)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)                    <div class="stack-name">Node Exporter</div>
-                <div class="stack-icon">Ubu</div>
-                <div>
-                    <div class="stack-name">Ubuntu</div>
-                    <div class="stack-name">GitHub</div>
-                    <div class="stack-version">-</div>
-                    <div class="stack-role">Source control</div>
-
+    app.run(host='0.0.0.0', port=5000)
