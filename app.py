@@ -1,6 +1,4 @@
-# Wazuh - Installation et Configuration
 
-## Composants
 from flask import Flask, render_template_string
 import subprocess
 import datetime
