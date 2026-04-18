@@ -181,7 +181,7 @@ HTML = '''
                         <span class="service-name">
                             <span class="status-dot dot-green"></span>Agent actif
                         </span>
-                        <span class="status-active">✅ Running</span>
+                        <span class="status-active">Running</span>
                     </div>
                     <div class="service-item">
                         <span class="service-name">Agent</span>
@@ -210,7 +210,7 @@ HTML = '''
                         <span class="service-name">
                             <span class="status-dot dot-green"></span>Dashboard actif
                         </span>
-                        <span class="status-active">✅ Running</span>
+                        <span class="status-active">Running</span>
                     </div>
                     <div class="service-item">
                         <span class="service-name">Prometheus</span>
