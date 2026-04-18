@@ -1,6 +1,4 @@
-# Wazuh - Installation et Configuration
 
-## Composants
 from flask import Flask, render_template_string
 import subprocess
 import datetime
@@ -294,7 +292,7 @@ if __name__ == '__main__':
                         <span class="service-name">Port</span>
                     </div>
                         <span class="service-name">Polling GitHub</span>
-                        <span class="status-active">✅ Running</span>
+                        <span class="status-active">Running</span>
                     </div>
                 <div class="service-list">
                     <div class="service-item">
