@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template_string
-import datetime
 
 app = Flask(__name__)
 
@@ -14,8 +13,6 @@ HTML = """
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: #0a0e1a; color: #e0e6f0; }
-
-        /* NAV */
         nav {
             background: #0d1117;
             padding: 15px 40px;
@@ -31,8 +28,6 @@ HTML = """
         nav ul { list-style: none; display: flex; gap: 30px; }
         nav ul li a { color: #888; text-decoration: none; font-size: 14px; transition: color 0.3s; }
         nav ul li a:hover { color: #00d4ff; }
-
-        /* HERO */
         .hero {
             text-align: center;
             padding: 80px 20px;
@@ -47,40 +42,10 @@ HTML = """
         .badge-green { background: #1a3a2a; color: #00ff88; border: 1px solid #00ff88; }
         .badge-purple { background: #2a1a3a; color: #b088ff; border: 1px solid #b088ff; }
         .badge-orange { background: #3a2a1a; color: #ff8800; border: 1px solid #ff8800; }
-
-        /* STATS */
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            padding: 40px 20px;
-            background: #0d1117;
-            border-bottom: 1px solid #2a3050;
-            flex-wrap: wrap;
-        }
-        .stat-item { text-align: center; }
-        .stat-number { font-size: 42px; font-weight: bold; color: #00d4ff; }
-        .stat-label { font-size: 14px; color: #888; margin-top: 5px; }
-
-        /* SECTIONS */
         .section { padding: 60px 40px; max-width: 1200px; margin: 0 auto; }
-        .section-title {
-            font-size: 28px;
-            color: #00d4ff;
-            margin-bottom: 30px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #2a3050;
-        }
-
-        /* CARDS SERVICES */
+        .section-title { font-size: 28px; color: #00d4ff; margin-bottom: 30px; padding-bottom: 10px; border-bottom: 1px solid #2a3050; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
-        .card {
-            background: #1a1f3a;
-            border-radius: 12px;
-            padding: 25px;
-            border: 1px solid #2a3050;
-            transition: transform 0.3s, border-color 0.3s;
-        }
+        .card { background: #1a1f3a; border-radius: 12px; padding: 25px; border: 1px solid #2a3050; transition: transform 0.3s, border-color 0.3s; }
         .card:hover { transform: translateY(-5px); border-color: #00d4ff; }
         .card-top { display: flex; align-items: center; margin-bottom: 15px; }
         .card-icon { font-size: 32px; margin-right: 15px; }
@@ -98,31 +63,9 @@ HTML = """
         .btn-orange { background: #ff8800; color: #0a0e1a; }
         .btn-purple { background: #b088ff; color: #0a0e1a; }
         .btn-blue { background: #00d4ff; color: #0a0e1a; }
-
-        /* ARCHITECTURE */
-        .arch-box {
-            background: #1a1f3a;
-            border-radius: 12px;
-            padding: 40px;
-            border: 1px solid #2a3050;
-            text-align: center;
-        }
-        .arch-flow {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 20px 0;
-        }
-        .arch-node {
-            background: #0d1117;
-            border: 2px solid #00d4ff;
-            border-radius: 10px;
-            padding: 15px 20px;
-            min-width: 120px;
-            text-align: center;
-        }
+        .arch-box { background: #1a1f3a; border-radius: 12px; padding: 40px; border: 1px solid #2a3050; text-align: center; }
+        .arch-flow { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
+        .arch-node { background: #0d1117; border: 2px solid #00d4ff; border-radius: 10px; padding: 15px 20px; min-width: 120px; text-align: center; }
         .arch-node .icon { font-size: 24px; margin-bottom: 8px; }
         .arch-node .name { font-size: 13px; color: #00d4ff; font-weight: bold; }
         .arch-node .port { font-size: 11px; color: #888; margin-top: 4px; }
@@ -133,71 +76,27 @@ HTML = """
         .arch-node-orange .name { color: #ff8800; }
         .arch-node-purple { border-color: #b088ff; }
         .arch-node-purple .name { color: #b088ff; }
-
-        /* STACK */
         .stack-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .stack-item {
-            background: #1a1f3a;
-            border-radius: 10px;
-            padding: 20px;
-            border: 1px solid #2a3050;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+        .stack-item { background: #1a1f3a; border-radius: 10px; padding: 20px; border: 1px solid #2a3050; display: flex; align-items: center; gap: 15px; }
         .stack-icon { font-size: 28px; }
         .stack-name { font-size: 15px; font-weight: bold; color: #e0e6f0; }
         .stack-version { font-size: 12px; color: #00ff88; margin-top: 3px; }
         .stack-role { font-size: 12px; color: #888; margin-top: 2px; }
-
-        /* PIPELINE */
-        .pipeline {
-            background: #1a1f3a;
-            border-radius: 12px;
-            padding: 30px;
-            border: 1px solid #2a3050;
-        }
-        .pipeline-steps {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        .pipeline-step {
-            background: #0d1117;
-            border: 1px solid #2a3050;
-            border-radius: 8px;
-            padding: 12px 20px;
-            text-align: center;
-            min-width: 110px;
-        }
+        .pipeline { background: #1a1f3a; border-radius: 12px; padding: 30px; border: 1px solid #2a3050; }
+        .pipeline-steps { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+        .pipeline-step { background: #0d1117; border: 1px solid #2a3050; border-radius: 8px; padding: 12px 20px; text-align: center; min-width: 110px; }
         .step-num { font-size: 11px; color: #888; }
         .step-name { font-size: 14px; color: #00d4ff; font-weight: bold; margin-top: 4px; }
         .step-desc { font-size: 11px; color: #888; margin-top: 3px; }
         .pipeline-arrow { color: #00d4ff; font-size: 20px; }
-
-        /* FOOTER */
-        footer {
-            background: #0d1117;
-            border-top: 1px solid #2a3050;
-            padding: 30px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
+        footer { background: #0d1117; border-top: 1px solid #2a3050; padding: 30px 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
         footer .footer-left h3 { color: #00d4ff; margin-bottom: 5px; }
         footer .footer-left p { color: #888; font-size: 13px; }
-        footer .footer-right { text-align: right; }
         footer .footer-right p { color: #888; font-size: 13px; }
     </style>
 </head>
 <body>
 
-    <!-- NAVIGATION -->
     <nav>
         <div class="logo">PROJET CLOUD</div>
         <ul>
@@ -208,7 +107,6 @@ HTML = """
         </ul>
     </nav>
 
-    <!-- HERO -->
     <div class="hero">
         <h1>Plateforme Cloud Securisee</h1>
         <p>Infrastructure DevOps complete integrant CI/CD automatise, detection d'intrusion en temps reel et supervision centralisee</p>
@@ -217,42 +115,14 @@ HTML = """
             <span class="badge badge-green">Jenkins</span>
             <span class="badge badge-purple">Wazuh</span>
             <span class="badge badge-orange">Grafana</span>
-            <span class="badge badge-blue">Flask</span>
-            <span class="badge badge-green">Vagrant</span>
-            <span class="badge badge-purple">Prometheus</span>
-            <span class="badge badge-orange">Ubuntu</span>
+            <span class="badge badge-blue">Ubuntu</span>
+            <span class="badge badge-green">GitHub</span>
         </div>
     </div>
 
-    <!-- STATS -->
-    <div class="stats">
-        <div class="stat-item">
-            <div class="stat-number">8</div>
-            <div class="stat-label">Services actifs</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-number">1</div>
-            <div class="stat-label">VM Ubuntu</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-number">5</div>
-            <div class="stat-label">Ports exposes</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-number">5GB</div>
-            <div class="stat-label">RAM allouee</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-number">2min</div>
-            <div class="stat-label">Deploy auto</div>
-        </div>
-    </div>
-
-    <!-- SERVICES -->
     <div class="section" id="services">
         <h2 class="section-title">Services</h2>
         <div class="grid">
-
             <div class="card">
                 <div class="card-top">
                     <div class="card-icon">Jenkins</div>
@@ -367,16 +237,13 @@ HTML = """
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
-    <!-- ARCHITECTURE -->
     <div class="section" id="architecture">
         <h2 class="section-title">Architecture</h2>
         <div class="arch-box">
             <p style="color: #888; margin-bottom: 30px;">Flux de deploiement et supervision de l'infrastructure</p>
-
             <div class="arch-flow">
                 <div class="arch-node">
                     <div class="icon">Dev</div>
@@ -396,9 +263,7 @@ HTML = """
                     <div class="port">:5000</div>
                 </div>
             </div>
-
             <div style="margin: 20px 0; color: #2a3050; font-size: 20px;">↓ surveillance</div>
-
             <div class="arch-flow">
                 <div class="arch-node arch-node-orange">
                     <div class="icon">IDS</div>
@@ -421,7 +286,6 @@ HTML = """
         </div>
     </div>
 
-    <!-- STACK TECHNIQUE -->
     <div class="section" id="stack">
         <h2 class="section-title">Stack Technique</h2>
         <div class="stack-grid">
@@ -458,19 +322,11 @@ HTML = """
                 </div>
             </div>
             <div class="stack-item">
-                <div class="stack-icon">Py</div>
-                <div>
-                    <div class="stack-name">Python</div>
-                    <div class="stack-version">v3.11</div>
-                    <div class="stack-role">Langage backend</div>
-                </div>
-            </div>
-            <div class="stack-item">
                 <div class="stack-icon">Fla</div>
                 <div>
                     <div class="stack-name">Flask</div>
                     <div class="stack-version">v3.1.3</div>
-                    <div class="stack-role">Framework web</div>
+                    <div class="stack-role">Backend + Frontend</div>
                 </div>
             </div>
             <div class="stack-item">
@@ -524,7 +380,6 @@ HTML = """
         </div>
     </div>
 
-    <!-- PIPELINE -->
     <div class="section" id="pipeline">
         <h2 class="section-title">Pipeline CI/CD</h2>
         <div class="pipeline">
@@ -569,7 +424,6 @@ HTML = """
         </div>
     </div>
 
-    <!-- FOOTER -->
     <footer>
         <div class="footer-left">
             <h3>Plateforme Cloud Securisee</h3>
