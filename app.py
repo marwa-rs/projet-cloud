@@ -429,10 +429,6 @@ HTML = """
             <h3>Plateforme Cloud Securisee</h3>
             <p>DevOps | Securite | Supervision | CI/CD</p>
         </div>
-        <div class="footer-right">
-            <p>Infrastructure locale → Migration AWS</p>
-            <p style="margin-top: 5px; color: #555;">IP : 192.168.56.10</p>
-        </div>
     </footer>
 
 </body>
