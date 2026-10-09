@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template_string
+from flask import Flask, render_template_string, jsonify
 
 app = Flask(__name__)
 
@@ -438,6 +438,11 @@ HTML = """
 @app.route('/')
 def home():
     return render_template_string(HTML)
+
+
+@app.route('/health')
+def health():
+    return jsonify(status="ok"), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
