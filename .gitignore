@@ -1,0 +1,15 @@
+# Vagrant : etat local de la VM + cle SSH privee
+.vagrant/
+
+# Secrets et cles
+.env
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.pyc
+
+# Systeme
+Thumbs.db
+.DS_Store
