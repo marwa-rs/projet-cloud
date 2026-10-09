@@ -1,0 +1,7 @@
+# Fins de ligne Linux (LF) pour tous les fichiers texte du projet
+* text=auto eol=lf
+
+# Fichiers binaires : ne jamais convertir
+*.png binary
+*.jpg binary
+*.db  binary
