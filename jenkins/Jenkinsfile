@@ -2,8 +2,9 @@ pipeline {
     agent any
 
     environment {
-        APP_NAME  = 'mon-app'
-        IMAGE_TAG = "${env.BUILD_NUMBER}"
+        APP_NAME     = 'mon-app'
+        IMAGE_TAG    = "${env.BUILD_NUMBER}"
+        GITLEAKS_IMG = 'zricethezav/gitleaks:v8.28.0'
     }
 
     options {
@@ -12,6 +13,15 @@ pipeline {
     }
 
     stages {
+        stage('Secrets') {
+            steps {
+                sh '''
+                    docker run --rm --volumes-from jenkins ${GITLEAKS_IMG} \
+                      dir "$WORKSPACE" --redact -v --exit-code 1
+                '''
+            }
+        }
+
         stage('Tests') {
             steps {
                 sh 'docker build --target test -t ${APP_NAME}:test .'
