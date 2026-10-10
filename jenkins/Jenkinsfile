@@ -1,24 +1,46 @@
 pipeline {
     agent any
+
+    environment {
+        APP_NAME  = 'mon-app'
+        IMAGE_TAG = "${env.BUILD_NUMBER}"
+    }
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '15'))
+        disableConcurrentBuilds()
+    }
+
     stages {
-        stage('Clone') {
+        stage('Tests') {
             steps {
-                git credentialsId: 'github-token',
-                    url: 'https://github.com/marwa-rs/projet-cloud.git',
-                    branch: 'main'
+                sh 'docker build --target test -t ${APP_NAME}:test .'
             }
         }
+
         stage('Build') {
             steps {
-                sh 'docker build -t mon-app .'
+                sh 'docker build --target final -t ${APP_NAME}:${IMAGE_TAG} -t ${APP_NAME}:latest .'
             }
         }
+
         stage('Deploy') {
             steps {
-                sh 'docker stop mon-app || true'
-                sh 'docker rm mon-app || true'
-                sh 'docker run -d --name mon-app -p 5000:5000 mon-app'
+                sh '''
+                    docker stop ${APP_NAME} || true
+                    docker rm ${APP_NAME} || true
+                    docker run -d --name ${APP_NAME} -p 5000:5000 ${APP_NAME}:${IMAGE_TAG}
+                '''
             }
+        }
+    }
+
+    post {
+        success {
+            echo "Deploiement reussi : ${APP_NAME}:${IMAGE_TAG}"
+        }
+        failure {
+            echo 'Pipeline en echec : la nouvelle version n a pas ete deployee.'
         }
     }
 }
