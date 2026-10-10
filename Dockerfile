@@ -20,7 +20,8 @@ RUN python -m pytest -v
 
 # ===== Etape 3 : image finale deployee =====
 FROM base AS final
-RUN useradd --create-home --uid 10001 appuser
+RUN pip uninstall -y pip setuptools wheel \
+    && useradd --create-home --uid 10001 appuser
 USER appuser
 EXPOSE 5000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \

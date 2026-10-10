@@ -5,6 +5,7 @@ pipeline {
         APP_NAME     = 'mon-app'
         IMAGE_TAG    = "${env.BUILD_NUMBER}"
         GITLEAKS_IMG = 'zricethezav/gitleaks:v8.28.0'
+        TRIVY_IMG    = 'aquasec/trivy:0.74.0@sha256:62b1e65e8869bc4b4c6aa4fa2b21595256c7c2f6018a9d9ad61caf87187c1969'
     }
 
     options {
@@ -16,7 +17,7 @@ pipeline {
         stage('Secrets') {
             steps {
                 sh '''
-                    docker run --rm --volumes-from jenkins ${GITLEAKS_IMG} \
+                    docker run --rm -v jenkins_home:/var/jenkins_home:ro ${GITLEAKS_IMG} \
                       dir "$WORKSPACE" --redact -v --exit-code 1
                 '''
             }
@@ -24,13 +25,31 @@ pipeline {
 
         stage('Tests') {
             steps {
-                sh 'docker build --target test -t ${APP_NAME}:test .'
+                sh 'docker build --pull --target test -t ${APP_NAME}:test .'
             }
         }
 
         stage('Build') {
             steps {
                 sh 'docker build --target final -t ${APP_NAME}:${IMAGE_TAG} -t ${APP_NAME}:latest .'
+            }
+        }
+
+        stage('Scan image') {
+            steps {
+                sh '''
+                    docker save ${APP_NAME}:${IMAGE_TAG} -o "$WORKSPACE/image.tar"
+                    docker run --rm \
+                      -v jenkins_home:/var/jenkins_home:ro \
+                      -v trivy-cache:/root/.cache/ \
+                      ${TRIVY_IMG} image --input "$WORKSPACE/image.tar" \
+                      --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1
+                '''
+            }
+            post {
+                always {
+                    sh 'rm -f "$WORKSPACE/image.tar"'
+                }
             }
         }
 
