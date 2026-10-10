@@ -56,9 +56,30 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
-                    docker stop ${APP_NAME} || true
-                    docker rm ${APP_NAME} || true
-                    docker run -d --name ${APP_NAME} -p 5000:5000 ${APP_NAME}:${IMAGE_TAG}
+                    PREVIOUS=$(docker inspect --format '{{.Config.Image}}' ${APP_NAME} 2>/dev/null || true)
+                    echo "Version en production avant deploiement : ${PREVIOUS:-aucune}"
+
+                    docker rm -f ${APP_NAME} || true
+                    docker run -d --name ${APP_NAME} --restart unless-stopped \
+                      -p 5000:5000 ${APP_NAME}:${IMAGE_TAG}
+
+                    for i in $(seq 1 10); do
+                        if curl -fsS http://172.17.0.1:5000/health; then
+                            echo ""
+                            echo "Health check OK (tentative $i)"
+                            exit 0
+                        fi
+                        echo "Tentative $i/10 : l app ne repond pas encore..."
+                        sleep 3
+                    done
+
+                    echo "ECHEC du health check : rollback vers ${PREVIOUS}"
+                    docker rm -f ${APP_NAME} || true
+                    if [ -n "$PREVIOUS" ]; then
+                        docker run -d --name ${APP_NAME} --restart unless-stopped \
+                          -p 5000:5000 "$PREVIOUS"
+                    fi
+                    exit 1
                 '''
             }
         }
