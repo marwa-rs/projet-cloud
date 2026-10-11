@@ -1,0 +1,35 @@
+#!/bin/bash
+# Execute automatiquement au premier demarrage de l'instance (en root)
+set -euxo pipefail
+exec > /var/log/user-data.log 2>&1
+
+# 1. Docker, Compose v2, Git
+apt-get update
+apt-get install -y docker.io docker-compose-v2 git curl
+systemctl enable --now docker
+usermod -aG docker ubuntu
+
+# 2. Swap de 2 Go (t3.small = 2 Go de RAM)
+if [ ! -f /swapfile ]; then
+  fallocate -l 2G /swapfile
+  chmod 600 /swapfile
+  mkswap /swapfile
+  swapon /swapfile
+  echo '/swapfile none swap sw 0 0' >> /etc/fstab
+fi
+
+# 3. Recuperer le projet depuis GitHub
+git clone ${repo_url} /opt/projet-cloud
+cd /opt/projet-cloud
+
+# 4. Construire et lancer l'application
+docker build --target final -t mon-app:aws .
+docker run -d --name mon-app --restart unless-stopped -p 5000:5000 mon-app:aws
+
+# 5. Lancer la supervision
+cd monitoring
+printf 'GRAFANA_ADMIN_PASSWORD=%s\n' '${grafana_admin_password}' > .env
+chmod 600 .env
+docker compose up -d
+
+echo "=== DEPLOIEMENT TERMINE ==="

@@ -1,0 +1,3 @@
+# Copier en terraform.tfvars  et remplir
+my_ip_cidr             = "X.X.X.X/32"
+grafana_admin_password = "change-me-12-caracteres-minimum"
